@@ -1,0 +1,1 @@
+CREATE DATABASE task_manager IF NOT EXISTS;
