@@ -1,0 +1,20 @@
+services:
+  db:
+    container_name: mysql
+    image: mysql:8.0.36
+    networks:
+      - back-tiers
+    restart: always
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: ''
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: task_manager
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./task-manager.sql:/docker-entrypoint-initdb.d/task-manager.sql
+volumes:
+  mysql_data: {}
+networks:
+  back-tiers: {}
