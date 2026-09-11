@@ -9,5 +9,23 @@ export default defineConfig({
     globals: true,
     root: './',
     include: ['**/*.spec.ts'],
+    coverage: {
+      thresholds: {
+        // Mirrors the 70% target from STATEMENT.md §12 for services and pipes.
+        perFile: true,
+        '**/*.service.ts': {
+          statements: 70,
+          branches: 70,
+          functions: 70,
+          lines: 70,
+        },
+        '**/*.pipe.ts': {
+          statements: 70,
+          branches: 70,
+          functions: 70,
+          lines: 70,
+        },
+      },
+    },
   },
 });
