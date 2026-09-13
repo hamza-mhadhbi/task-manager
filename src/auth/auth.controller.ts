@@ -1,4 +1,4 @@
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiConflictResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -13,6 +13,7 @@ import {
 import { RegisterRequestDto } from './register-request.dto.js';
 import { AuthService } from './auth.service.js';
 import { RegisterResponseDto } from './register-response-dto.js';
+import { ErrorResponseDto } from '../common/dto/error-response.dto.js';
 
 @Controller({
   path: '/auth',
@@ -24,7 +25,12 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Header('Content-Type', 'application/json')
   @ApiOkResponse({
+    description: 'User account created.',
     type: RegisterResponseDto,
+  })
+  @ApiConflictResponse({
+    description: 'Email already used by another account.',
+    type: ErrorResponseDto,
   })
   @UseInterceptors(ClassSerializerInterceptor)
   public async register(
