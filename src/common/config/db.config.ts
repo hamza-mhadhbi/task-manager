@@ -1,6 +1,13 @@
 import { ConfigFactory, registerAs } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 
+// Entities
+import { User } from '../../users/user.entity.js';
+
+function stringToBoolean(val?: string): boolean {
+  return val?.trim() === 'true' ? true : false;
+}
+
 export default registerAs<TypeOrmModuleAsyncOptions, ConfigFactory>(
   'database',
   () => ({
@@ -10,5 +17,9 @@ export default registerAs<TypeOrmModuleAsyncOptions, ConfigFactory>(
     host: process.env.DB_HOST ?? 'localhost',
     port: Number.parseInt(process.env.DB_PORT ?? '3306', 10),
     database: 'task_manager',
+    entities: [User],
+    // It's dangerous
+    autoLoadEntities: stringToBoolean(process.env.DB_AUTO_LOAD_ENTITIES),
+    synchronize: stringToBoolean(process.env.DB_SYNCHRONIZE),
   }),
 );

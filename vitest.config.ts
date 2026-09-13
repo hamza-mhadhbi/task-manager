@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { coverageConfigDefaults, defineConfig } from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
@@ -9,6 +9,11 @@ export default defineConfig({
     globals: true,
     root: './',
     include: ['**/*.spec.ts'],
+    exclude: [
+      ...coverageConfigDefaults.exclude,
+      '**/*.dto.ts',
+      '**/*.entity.ts',
+    ],
     coverage: {
       thresholds: {
         // Mirrors the 70% target from STATEMENT.md §12 for services and pipes.

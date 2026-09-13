@@ -6,10 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export enum UserRole {
-  User = 'USER',
-  Admin = 'ADMIN',
-}
+import { UserRole } from '../common/models/user.model.js';
 
 @Entity({
   name: 'users',
@@ -21,10 +18,13 @@ export class User {
   })
   id: string;
 
-  @Column({ type: 'string', nullable: false, unique: true })
+  @Column({ type: 'varchar', nullable: false, unique: true })
   email: string;
 
-  @Column({ type: 'string' })
+  @Column({ type: 'varchar', nullable: false, select: false })
+  password: string;
+
+  @Column({ type: 'varchar' })
   fullName: string;
 
   @Column({ type: 'enum', enum: UserRole })

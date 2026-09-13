@@ -5,7 +5,10 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import databaseConfig from './common/config/db.config.js';
+
+// Modules
 import { UserModule } from './users/user.module.js';
+import { AuthModule } from './auth/auth.module.js';
 
 @Module({
   imports: [
@@ -15,6 +18,7 @@ import { UserModule } from './users/user.module.js';
     }),
     TypeOrmModule.forRootAsync(databaseConfig.asProvider()),
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
