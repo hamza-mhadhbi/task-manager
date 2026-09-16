@@ -9,6 +9,7 @@ import databaseConfig from './common/config/db.config.js';
 // Modules
 import { UserModule } from './users/user.module.js';
 import { AuthModule } from './auth/auth.module.js';
+import { HealthModule } from './health/health.module.js';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from './auth/auth.module.js';
     TypeOrmModule.forRootAsync(databaseConfig.asProvider()),
     UserModule,
     AuthModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
