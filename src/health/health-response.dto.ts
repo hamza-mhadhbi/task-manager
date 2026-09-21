@@ -10,7 +10,7 @@ enum ComponentStatus {
   Down = 'down',
 }
 
-interface IDetails {
+interface Details {
   status: ComponentStatus;
   responseTime: number;
   message?: string;
@@ -41,7 +41,7 @@ export class HealthResponseDto {
       database: databaseIndicatorSchema,
     },
   })
-  info: Record<'database', IDetails>;
+  info: Record<'database', Details>;
 
   @ApiProperty({
     type: 'object',
@@ -49,7 +49,7 @@ export class HealthResponseDto {
       database: databaseIndicatorSchema,
     },
   })
-  details: Record<'database', IDetails>;
+  details: Record<'database', Details>;
 
   @ApiProperty({
     type: 'object',
@@ -57,5 +57,5 @@ export class HealthResponseDto {
       database: databaseIndicatorSchema,
     },
   })
-  error?: Record<'database', IDetails>;
+  error?: Record<'database', Details>;
 }
