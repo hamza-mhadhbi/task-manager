@@ -31,7 +31,7 @@ export class UserDto {
     enum: UserRole,
     required: false,
     nullable: false,
-    example: 'user',
+    example: UserRole.User,
   })
   @IsString()
   @IsEnum(UserRole)

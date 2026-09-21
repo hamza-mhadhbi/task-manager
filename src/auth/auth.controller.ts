@@ -1,4 +1,8 @@
-import { ApiConflictResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiConflictResponse,
+  ApiOkResponse,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -10,10 +14,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { RegisterRequestDto } from './register-request.dto.js';
-import { AuthService } from './auth.service.js';
-import { RegisterResponseDto } from './register-response-dto.js';
+// DTOs
+import { RegisterRequestDto } from './dto/register-request.dto.js';
+import { RegisterResponseDto } from './dto/register-response-dto.js';
 import { ErrorResponseDto } from '../common/dto/error-response.dto.js';
+
+// Services
+import { AuthService } from './auth.service.js';
+import { LoginResponseDto } from './dto/login-response.dto.js';
+import { LoginRequestDto } from './dto/login-request.dto.js';
 
 @Controller({
   path: '/auth',
@@ -34,9 +43,32 @@ export class AuthController {
   })
   @UseInterceptors(ClassSerializerInterceptor)
   public async register(
-    @Body() user: RegisterRequestDto,
+    @Body() registerRequest: RegisterRequestDto,
   ): Promise<RegisterResponseDto> {
-    const userDomain = await this.authService.register(user);
+    const userDomain = await this.authService.register(registerRequest);
     return new RegisterResponseDto(userDomain);
+  }
+
+  @Post('/login')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    type: LoginResponseDto,
+    description: 'Authentification success',
+    example: new LoginResponseDto('eyMyAccessToken...'),
+  })
+  @ApiUnauthorizedResponse({
+    type: ErrorResponseDto,
+    description: 'Authentification Failed',
+    example: {
+      statusCode: HttpStatus.UNAUTHORIZED,
+      message: 'Authentification failed !',
+      error: 'Unauthorized',
+    },
+  })
+  public async login(
+    @Body() loginRequest: LoginRequestDto,
+  ): Promise<LoginResponseDto> {
+    const result = await this.authService.login(loginRequest);
+    return new LoginResponseDto(result.accessToken);
   }
 }

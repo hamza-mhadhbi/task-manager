@@ -4,7 +4,7 @@ import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import request from 'supertest';
-import { App } from 'supertest/types';
+import { App } from 'supertest/types.js';
 import { Repository } from 'typeorm';
 
 import { AppModule } from './../src/app.module.js';
@@ -150,6 +150,73 @@ describe('AuthController (e2e)', () => {
           fullName: 'John Doe',
           isSuperAdmin: true,
         })
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+  });
+
+  describe('POST /auth/login', () => {
+    const password = 'p@SsWord123!';
+
+    const registerUser = async (email: string) => {
+      await request(app.getHttpServer())
+        .post('/auth/register')
+        .send({ email, password, fullName: 'John Doe' })
+        .expect(HttpStatus.OK);
+    };
+
+    it('should authenticate with valid credentials and return an access token', async () => {
+      const email = uniqueEmail();
+      await registerUser(email);
+
+      const response = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email, password })
+        .expect(HttpStatus.OK);
+
+      expect(response.body).toEqual(
+        expect.objectContaining({ accessToken: expect.any(String) }),
+      );
+      expect(response.body.accessToken.length).toBeGreaterThan(32);
+    });
+
+    it('should reject an unknown email (401)', async () => {
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email: uniqueEmail(), password })
+        .expect(HttpStatus.UNAUTHORIZED);
+    });
+
+    it('should reject a wrong password (401)', async () => {
+      const email = uniqueEmail();
+      await registerUser(email);
+
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email, password: 'wrong-password' })
+        .expect(HttpStatus.UNAUTHORIZED);
+    });
+
+    it('should reject an invalid email (400)', async () => {
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email: 'not-an-email', password })
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should reject a payload missing required fields (400)', async () => {
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email: uniqueEmail() })
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should reject unknown fields not part of the DTO (400)', async () => {
+      const email = uniqueEmail();
+      await registerUser(email);
+
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email, password, isSuperAdmin: true })
         .expect(HttpStatus.BAD_REQUEST);
     });
   });

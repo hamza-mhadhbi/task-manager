@@ -72,7 +72,9 @@ describe('databaseConfig', () => {
   it('parses DB_PORT as a number', () => {
     process.env.DB_PORT = '5432';
 
-    expect(databaseConfig().port).toBe(5432);
-    expect(typeof databaseConfig().port).toBe('number');
+    const config = databaseConfig() as { port: number };
+
+    expect(config.port).toBe(5432);
+    expect(typeof config.port).toBe('number');
   });
 });
