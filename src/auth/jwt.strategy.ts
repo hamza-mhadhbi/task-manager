@@ -33,7 +33,7 @@ export class JwtStrategy
 {
   constructor(
     @Inject(authConfig.KEY)
-    private readonly config: ConfigType<typeof authConfig>,
+    protected readonly config: ConfigType<typeof authConfig>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -42,8 +42,6 @@ export class JwtStrategy
       issuer: config.issuer,
       audience: config.audience,
     });
-
-    this.config = config;
   }
 
   public validate(payload: ValidateArgs): ValidateReturnValue {

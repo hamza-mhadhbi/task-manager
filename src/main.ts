@@ -11,7 +11,7 @@ async function bootstrap() {
     .setTitle('Task manager example')
     .setDescription('The Task Manager API description')
     .setVersion('1.0')
-    // .addSecurity('bearer', { type: 'http', scheme: 'bearer' })
+    .addSecurity('bearer', { type: 'http', scheme: 'bearer' })
     .build();
 
   const documentFactory = SwaggerModule.createDocument(app, config);

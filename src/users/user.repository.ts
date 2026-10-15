@@ -10,11 +10,15 @@ export class UserRepository {
     @InjectRepository(User) private readonly repository: Repository<User>,
   ) {}
 
-  findByEmail(email: string): Promise<User | null> {
+  public async findByEmail(email: string): Promise<User | null> {
     return this.repository.findOneBy({ email });
   }
 
-  create(user: Partial<User>): Promise<User> {
+  public async findById(id: string): Promise<User | null> {
+    return this.repository.findOneBy({ id });
+  }
+
+  public async create(user: Partial<User>): Promise<User> {
     return this.repository.save(this.repository.create(user));
   }
 }

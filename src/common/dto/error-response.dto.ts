@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ErrorResponseDto {
@@ -5,9 +6,9 @@ export class ErrorResponseDto {
     type: 'number',
     required: true,
     nullable: false,
-    example: 409,
+    example: HttpStatus.CONFLICT,
   })
-  statusCode: number;
+  statusCode: HttpStatus;
 
   @ApiProperty({
     type: 'string',
@@ -23,4 +24,10 @@ export class ErrorResponseDto {
     example: 'Conflict',
   })
   error?: string;
+
+  constructor(statusCode: HttpStatus, message: string, error?: string) {
+    this.statusCode = statusCode;
+    this.message = message;
+    this.error = error;
+  }
 }
