@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
 import databaseConfig from './common/config/db.config.js';
 
 // Modules
@@ -22,7 +20,5 @@ import { HealthModule } from './health/health.module.js';
     AuthModule,
     HealthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

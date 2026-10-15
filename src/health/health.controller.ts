@@ -7,7 +7,9 @@ import {
 } from '@nestjs/terminus';
 
 import { HealthResponseDto } from './health-response.dto.js';
+import { Public } from '../common/decorators/public.decorator.js';
 
+@Public()
 @Controller()
 export class HealthController {
   constructor(

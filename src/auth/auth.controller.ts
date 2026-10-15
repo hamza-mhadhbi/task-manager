@@ -23,13 +23,16 @@ import { ErrorResponseDto } from '../common/dto/error-response.dto.js';
 import { AuthService } from './auth.service.js';
 import { LoginResponseDto } from './dto/login-response.dto.js';
 import { LoginRequestDto } from './dto/login-request.dto.js';
+import { Public } from '../common/decorators/public.decorator.js';
 
 @Controller({
   path: '/auth',
 })
+@UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('/register')
   @HttpCode(HttpStatus.OK)
   @Header('Content-Type', 'application/json')
@@ -41,7 +44,6 @@ export class AuthController {
     description: 'Email already used by another account.',
     type: ErrorResponseDto,
   })
-  @UseInterceptors(ClassSerializerInterceptor)
   public async register(
     @Body() registerRequest: RegisterRequestDto,
   ): Promise<RegisterResponseDto> {
@@ -49,6 +51,7 @@ export class AuthController {
     return new RegisterResponseDto(userDomain);
   }
 
+  @Public()
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({

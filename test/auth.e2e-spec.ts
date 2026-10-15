@@ -4,7 +4,7 @@ import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import request from 'supertest';
-import { App } from 'supertest/types.js';
+import { type App } from 'supertest/types.js';
 import { Repository } from 'typeorm';
 
 import { AppModule } from './../src/app.module.js';

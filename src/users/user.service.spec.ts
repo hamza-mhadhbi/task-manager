@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
 import { Mock, vi } from 'vitest';
 
 import { UserService } from './user.service.js';
@@ -9,6 +10,7 @@ import { UserRole } from '../common/models/user.model.js';
 describe('UserService', () => {
   let userService: UserService;
   let userRepository: {
+    findById: Mock;
     findByEmail: Mock;
     create: Mock;
   };
@@ -25,6 +27,7 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     userRepository = {
+      findById: vi.fn(),
       findByEmail: vi.fn(),
       create: vi.fn(),
     };
@@ -37,6 +40,29 @@ describe('UserService', () => {
     }).compile();
 
     userService = app.get<UserService>(UserService);
+  });
+
+  describe('findUserById', () => {
+    it('should return the user when found', async () => {
+      userRepository.findById.mockResolvedValue(user);
+
+      const result = await userService.findUserById(user.id);
+
+      expect(userRepository.findById).toHaveBeenCalledTimes(1);
+      expect(userRepository.findById).toHaveBeenCalledWith(user.id);
+      expect(result).toBe(user);
+    });
+
+    it('should throw a not found exception when the user id not found', async () => {
+      const wrongUserId = 'wrong-user-id';
+      userRepository.findById.mockResolvedValue(null);
+
+      await expect(userService.findUserById(wrongUserId)).rejects.toThrow(
+        new NotFoundException(UserService.USER_NOT_FOUND_ERROR),
+      );
+      expect(userRepository.findById).toHaveBeenCalledTimes(1);
+      expect(userRepository.findById).toHaveBeenCalledWith(wrongUserId);
+    });
   });
 
   describe('findUserByEmail', () => {

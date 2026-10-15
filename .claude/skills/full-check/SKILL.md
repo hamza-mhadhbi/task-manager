@@ -1,6 +1,6 @@
 ---
 name: full-check
-description: Run the full local quality gate (lint, format check, unit tests with coverage, e2e tests, build) in sequence and report a clear pass/fail summary per step. Use before committing/pushing, or whenever asked to verify the repo is healthy.
+description: Run the full local quality gate (lint, format check, unit tests with coverage, e2e tests, build, plus a non-blocking npm audit) in sequence and report a clear pass/fail summary per step. Use before committing/pushing, or whenever asked to verify the repo is healthy.
 allowed-tools: Bash
 ---
 
@@ -16,10 +16,19 @@ clearly (don't silently continue past a failure without flagging it):
    connect rather than failing assertions, say so explicitly rather than
    reporting it as a test failure)
 5. `npm run build`
+6. `npm audit --omit=dev --audit-level=high` — **informational, non-blocking**.
+   Production dependencies only, high/critical only. Never report it as a
+   failure (❌): if vulnerabilities are found, mark it ⚠️ with the count per
+   severity and the affected packages (plus whether `npm audit fix` can
+   resolve them without a breaking change). If the npm registry is
+   unreachable, say so explicitly rather than reporting vulnerabilities.
+   Unlike steps 1–5, this check isn't part of the husky hooks, and its result
+   can change over time without any code change (new advisories).
 
-At the end, output a compact summary table: step name → pass/fail, and for
-any failure, the specific error (not the full raw log) plus a one-line
-diagnosis if obvious. This mirrors what a CI/PR gate and the `pre-commit`/
-`pre-push` husky hooks would check, so it's meant to be run before pushing —
+At the end, output a compact summary table: step name → pass/fail
+(✅/⚠️ for the audit step), and for any failure, the specific error (not the
+full raw log) plus a one-line diagnosis if obvious. Steps 1–5 mirror what a
+CI/PR gate and the `pre-commit`/`pre-push` husky hooks would check, so it's
+meant to be run before pushing —
 don't fix failures automatically unless asked, just report them (see
 CLAUDE.md's "flag issues only, let you decide" review style).
