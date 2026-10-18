@@ -1,0 +1,19 @@
+services:
+  task-manager-api:
+    build: ../
+    container_name: task-manager
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      JWT_ISSUER: http://localhost:3000/auth
+      JWT_AUDIENCE: http://localhost:3000/auth
+      JWT_EXPIRES_IN: 1m
+      JWT_SECRET: 'secret'
+      DB_HOST: 'db'
+    networks:
+      - back-tiers
+networks:
+  back-tiers:
+    name: back-tiers
+    external: true

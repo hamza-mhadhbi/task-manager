@@ -17,4 +17,5 @@ services:
 volumes:
   mysql_data: {}
 networks:
-  back-tiers: {}
+  back-tiers:
+    name: back-tiers
