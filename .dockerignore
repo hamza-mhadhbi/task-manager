@@ -1,0 +1,17 @@
+node_modules
+vitest.config*
+*.env*
+dist
+.claude
+.git
+compose
+.husky
+coverage
+test
+.gitignore
+.prettierrc
+Dockerfile
+.dockerignore
+*.md
+tsconfig.build.tsbuildinfo
+oxlint.json
